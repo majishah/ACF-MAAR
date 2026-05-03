@@ -27,9 +27,6 @@
 > The Colab notebooks provided above serve as **fully functional, end-to-end demonstrations** of the ACF-MAAR framework, engineered to run within Google Colab's free-tier constraints (12 GB RAM, 90-minute timeout). Each notebook executes the **complete pipeline** — ACF-driven window sizing, hybrid drift detection, two-tier adaptation with asynchronous AutoML, fixed-window baselines, and ablation study — over a representative 1–2 day segment of each dataset, producing verifiable results in under 90 minutes.
 >
 > The manuscript results (Tables 4–12) were generated using the **identical pipeline code** executed over extended evaluation horizons (7–30 consecutive days, depending on dataset duration) on dedicated infrastructure. This longer horizon naturally yields more drift events, more adaptation cycles, and a richer evaluation surface — but the underlying algorithm, model candidate pool, ACF significance bounds, and adaptation thresholds remain **exactly the same** as in the Colab notebooks. No hyperparameters, model configurations, or pipeline logic were changed between the two settings; the only difference is the number of streaming days processed.
->
-> Reviewers can verify this equivalence by comparing any Colab notebook's source code against the corresponding script in `experiments/`. To reproduce the full manuscript results locally, run `python experiments/exp_cross_dataset.py`, which iterates over the complete dataset duration. Detailed setup instructions are available in the [Reproducibility Guide](#reproducibility-guide-google-colab) section below.
-
 ### Overview
 
 This repository hosts the implementation and experimental validation of **ACF-MAAR (Autocorrelation-Guided Multi-Window and AutoML-based Adaptable Regression)**, a streaming forecasting framework that leverages autocorrelation function (ACF) analysis as a principled, unifying signal for three interdependent challenges in non-stationary data streams:
