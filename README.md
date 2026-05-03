@@ -272,42 +272,6 @@ Python caches imported modules in `sys.modules`. Patches 1–4 modify `.py` file
 
 ### Usage
 
-#### Reproducing All Experiments
-
-To replicate the complete evaluation presented in the manuscript (344+ configurations):
-
-```bash
-python run_all_experiments.py
-```
-
-This executes all six evaluation stages sequentially and saves results to the `results/` directory.
-
-#### Running Individual Experiments
-
-Each experiment maps to a specific section in the paper:
-
-```bash
-# §4.3 — ACF-Adaptive vs. Fixed Window Sizing
-python experiments/exp_window_sizing.py
-
-# §4.3 — Drift Detection Quality Comparison
-python experiments/exp_drift_detection.py
-
-# §4.4 — Adaptive Model Selection Under Drift
-python experiments/exp_adaptive_selection.py
-
-# §4.5 — Baseline Comparisons (LR, Stream Models, LSTM)
-python experiments/exp_baseline_comparison.py
-
-# §4.6 — Cross-Dataset Generalization
-python experiments/exp_cross_dataset.py
-
-# §4.7 — Ablation Study
-python experiments/exp_ablation.py
-
-# §4.8 — Generate Graphical Analysis Plots
-python experiments/exp_graphical_analysis.py
-```
 
 #### Running ACF-MAAR on Custom Data
 
