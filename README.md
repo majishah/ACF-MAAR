@@ -18,7 +18,7 @@
 | **Household** | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1rC9CooFtzufKxCWUy8sPT4UdUq9_1cb8#scrollTo=dBGEWL5eUst1) | Full ACF-MAAR pipeline: window sizing, drift detection, adaptive model selection, ablation study |
 | Elec2 | *Coming soon* | Australian Electricity Market evaluation |
 | Korea Mfg. | *Coming soon* | South Korean Manufacturing Facilities evaluation |
-| Tetouan | *Coming soon* | Power Consumption of Tetouan City evaluation |
+| **Tetouan** | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1RMsknHx72GI8dMRfRTFd2qsTs-STHQIf#scrollTo=1quRau-tFVoh) | Cross-dataset validation: Tetouan City power consumption (10-min intervals) |
 | Uruguay | *Coming soon* | Uruguay Household Consumption evaluation |
 
 ---
