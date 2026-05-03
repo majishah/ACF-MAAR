@@ -200,6 +200,76 @@ pip install -r requirements.txt
 
 ---
 
+### Reproducibility Guide (Google Colab)
+
+The Colab notebook is validated on **Google Colab with Python 3.12** (as of May 2025). PyCaret 3.3.2 has known compatibility issues with Colab's default package versions. The notebook's setup cells handle all patches automatically, but the following documents every issue and fix for full transparency.
+
+#### Quick Start
+
+1. Open the Colab notebook via the badge above.
+2. Run **Cell 1a** (package installs).
+3. **Runtime → Restart session** (mandatory — see explanation below).
+4. Run **Cell 1b** (patches) → **Cell 1c** (imports) → **Cell 1d** (mount drive).
+5. Execute all remaining cells sequentially, or use **Runtime → Run all**.
+
+#### Why `--no-deps`?
+
+PyCaret 3.3.2 declares strict upper bounds on core dependencies (`scipy<=1.11.4`, `pandas<2.2.0`, `matplotlib<3.8.0`) that conflict with Colab's pre-installed versions. Installing with `--no-deps` prevents pip from downgrading Colab's core stack, which would break other pre-installed packages. The four patches below resolve the resulting source-level incompatibilities.
+
+#### Compatibility Patches
+
+The notebook applies four source-level patches before importing any library. Each targets a specific incompatibility between PyCaret 3.3.2 and the Colab Python 3.12 environment:
+
+| # | File Patched | Root Cause | Fix Applied |
+|---|---|---|---|
+| 1 | `pycaret/__init__.py` | PyCaret raises `RuntimeError` on Python ≥3.12 (officially supports 3.9–3.11 only). | Rewrite `__init__.py` to remove the version gate, retaining only version metadata and exports. |
+| 2 | `pycaret/internal/memory.py` | `FastMemory` passes `bytes_limit` to `joblib.Memory.__init__()`, but this parameter was removed in joblib ≥1.4. `FastMemory.__del__()` also crashes with `AttributeError: 'FastMemory' object has no attribute 'store_backend'`. | Replace `return FastMemory(...)` with `return None` in `get_memory()`, disabling PyCaret's optional result caching. No impact on model training correctness. |
+| 3 | `pycaret/internal/pipeline.py` | `from sklearn.utils import _print_elapsed_time` fails because this private utility was removed in scikit-learn ≥1.4. PyCaret calls it as a context manager (`with _print_elapsed_time(...)`). | Inject a no-op `@contextmanager` definition directly into `pipeline.py` after the import block. |
+| 4 | `scikitplot/*.py` | `from scipy import interp` was removed in SciPy ≥1.12. PyCaret depends on scikit-plot, which still imports via this path. | Replace with `from numpy import interp` in all affected scikit-plot files (`metrics.py`, `plotters.py`). |
+
+> **Note:** These patches modify installed package files within Colab's ephemeral runtime. They do not alter the repository source code and are re-applied automatically on each fresh session.
+
+#### Why a Runtime Restart Is Required
+
+Python caches imported modules in `sys.modules`. Patches 1–4 modify `.py` files on disk, so the interpreter must be restarted for the patched code to load. Without a restart, the original (unpatched) bytecode remains in memory, and the same errors will persist despite the fixes being written to disk.
+
+#### Verified Environment
+
+| Package | Version | Notes |
+|---|---|---|
+| Python | 3.12.x | Colab default (May 2025) |
+| PyCaret | 3.3.2 | Installed with `--no-deps`; 4 source patches applied |
+| scikit-learn | 1.6.x | Colab default; compatible after `pipeline.py` patch |
+| joblib | 1.4.x | Colab default; compatible after `memory.py` patch |
+| SciPy | 1.12+ | Colab default; compatible after scikit-plot patch |
+| River | 0.21.2 | Installed with `--no-deps` |
+| statsmodels | 0.14+ | Colab default |
+| xgboost | 1.7+ | Colab default |
+
+#### Expected Runtime
+
+| Section | Approximate Time |
+|---|---|
+| Setup and Data Loading | < 1 minute |
+| Initial AutoML Model Selection (§5) | 2–5 minutes |
+| ACF-MAAR Streaming Pipeline (§8) | 5–15 minutes |
+| Stream-Specific Baselines (§9–10) | 3–5 minutes |
+| Fixed Window Comparison (§15) | 10–20 minutes |
+| Ablation Study (§16) | 20–40 minutes |
+| **Total** | **~45–90 minutes** |
+
+#### Troubleshooting
+
+| Symptom | Cause | Solution |
+|---|---|---|
+| `TypeError: Memory.__init__() got an unexpected keyword argument 'bytes_limit'` | Runtime not restarted after Cell 1a | Runtime → Restart session, then run from Cell 1b |
+| `TypeError: 'NoneType' object does not support the context manager protocol` | `pipeline.py` patch not loaded | Runtime → Restart session, then run from Cell 1b |
+| `NameError: name 'series_to_supervised' is not defined` | Cells executed out of order | Run all cells sequentially from top, or use Runtime → Run all |
+| `NameError: name 'stream_mae' is not defined` | Streaming pipeline cell (§8) was skipped | Run Section 8 (both sync and async cells) before Sections 15–16 |
+| `IndentationError` in `pycaret/__init__.py` | Corrupted from a prior partial patch | Re-run Cell 1b to overwrite cleanly |
+
+---
+
 ### Usage
 
 #### Reproducing All Experiments
