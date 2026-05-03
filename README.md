@@ -19,7 +19,7 @@
 | **Elec2** | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1cQXwZmL4vs2I6mIxhzVaxWWQy_-DwFjV#scrollTo=1quRau-tFVoh) | Cross-dataset validation: Australian NSW electricity market (30-min intervals) |
 | Korea Mfg. | *Coming soon* | South Korean Manufacturing Facilities evaluation |
 | **Tetouan** | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1RMsknHx72GI8dMRfRTFd2qsTs-STHQIf#scrollTo=1quRau-tFVoh) | Cross-dataset validation: Tetouan City power consumption (10-min intervals) |
-| Uruguay | *Coming soon* | Uruguay Household Consumption evaluation |
+| **Uruguay** | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1mVmZjm5x6aK_wm2tT-iD4u7FO34Lhfk-#scrollTo=1quRau-tFVoh) | Cross-dataset validation: Uruguay household consumption (15-min intervals) |
 
 ---
 
