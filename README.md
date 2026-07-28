@@ -1,90 +1,100 @@
-# ACF-MAAR: Autocorrelation-Guided Multi-Window and AutoML-based Adaptable Regression
+# 🔄 ACF-MAAR
 
-ACF-MAAR is a streaming-regression framework that uses a single
-autocorrelation (ACF) signal to jointly drive three tasks usually handled
-separately: adaptive window sizing, structural drift detection, and model
-adaptation. Window length is derived from a lag-dependent Bartlett
-significance bound, drift is flagged by a variance-standardised ACF-profile
-statistic with a chi-square threshold invariant to window size, and a
-two-tier AutoML policy escalates from window resizing to full model
-replacement only when local prediction error also exceeds a statistically
-derived threshold.
+**Autocorrelation-Guided Multi-Window and AutoML-based Adaptable Regression**
 
-## Key results
+![Python](https://img.shields.io/badge/python-3.10+-blue.svg)
+![License](https://img.shields.io/badge/license-MIT-green.svg)
+![Status](https://img.shields.io/badge/status-research-orange.svg)
 
-- **Forecasting:** ranks 2nd of 10 stream-specific baselines by MAE on the
-  UCI Household Electric Power dataset (MAE 0.170, R² 0.932), and is
-  strongest in the operationally critical peak-consumption regime.
-- **Window sizing:** fully data-driven and hyperparameter-free; competitive
-  with the best fixed window without grid search (validated on the
-  Mackey-Glass benchmark, R² 0.997).
-- **Detection:** the ACF statistic detects structural changes invisible to
-  mean- and distribution-based detectors; combined with ADWIN it is
-  reported directly against conventional baselines.
-- **Adaptation:** a multi-day ablation finds naive retraining is a net cost
-  on the Household data; a controlled lag-shift experiment localises this to
-  recency-based feature selection and undersized retrain windows, and shows
-  that ACF-guided feature selection on an adequate window recovers accuracy
-  (23% improvement over a static model).
+A streaming-regression framework that uses a **single autocorrelation signal** to jointly drive window sizing, drift detection, and model adaptation — three tasks usually handled by separate heuristics.
 
-## Datasets
+---
 
-- **UCI Household Electric Power** (primary, real-world): minute-resolution
-  household power consumption. Target: `Global_active_power`.
-- **Mackey-Glass** (third-party synthetic benchmark): a standard chaotic
-  time series with genuine temporal autocorrelation, used to validate
-  generalisation and window sizing under known ground truth.
-- **Lag-shift stream** (controlled diagnostic, generator included): a
-  synthetic AR stream whose generating lag switches (1 → 30), used to isolate
-  and demonstrate the adaptation mechanism under a genuine
-  predictive-relationship change.
+## ✨ Highlights
 
-## Notebooks (Google Colab)
+- 📐 **Hyperparameter-free window sizing** from a lag-dependent Bartlett bound
+- 🎯 **Structural drift detection** invisible to mean-based detectors, via a variance-standardised ACF statistic with a window-invariant chi-square threshold
+- ⚙️ **Two-tier AutoML adaptation** — lightweight resize first, full retrain only when error exceeds a statistical threshold
+- 📊 **Rigorous multi-day evaluation** that surfaces limitations single-segment protocols hide
 
-- **Main pipeline (Household):**
-  https://colab.research.google.com/drive/1cYrdmkiSgrRFVOxE8knWwByVZrXx8Di6
-- **Mackey-Glass benchmark:**
-  https://colab.research.google.com/drive/1ZshjiPaYpwg66mK6aegCLTsjo6JcK0S_
-- **Lag-shift adaptation experiment:**
-  https://colab.research.google.com/drive/13KaehSztAWl6kYm7tekD3WJOKG4-wKSI
+---
 
-## Installation
+## 📈 Key Results
+
+| Aspect | Result |
+|--------|--------|
+| 🏆 Forecasting | **2nd of 10** stream baselines by MAE (0.170, R² 0.932) |
+| ⚡ Peak regime | Strongest relative accuracy where it matters operationally (7.7%) |
+| 📐 Window sizing | Competitive with best fixed window, **no grid search** |
+| 🔍 Detection | Catches structural change mean-based detectors miss |
+| 🔧 Adaptation | Controlled experiment recovers **+23%** with ACF-guided feature selection |
+
+---
+
+## 🗂️ Datasets
+
+| Dataset | Type | Role |
+|---------|------|------|
+| 🏠 **UCI Household Power** | Real-world | Primary evaluation |
+| 🌀 **Mackey-Glass** | Third-party synthetic | Generalisation benchmark (R² 0.997) |
+| 🔀 **Lag-shift stream** | Controlled diagnostic | Isolates the adaptation mechanism |
+
+---
+
+## 📓 Notebooks
+
+| Notebook | Link |
+|----------|------|
+| 🔬 **Main Pipeline (Household)** | [Open in Colab](https://colab.research.google.com/drive/1cYrdmkiSgrRFVOxE8knWwByVZrXx8Di6) |
+| 🌀 **Mackey-Glass Benchmark** | [Open in Colab](https://colab.research.google.com/drive/1ZshjiPaYpwg66mK6aegCLTsjo6JcK0S_) |
+| 🔀 **Lag-Shift Experiment** | [Open in Colab](https://colab.research.google.com/drive/13KaehSztAWl6kYm7tekD3WJOKG4-wKSI) |
+
+---
+
+## 🚀 Installation
 
 ```bash
 pip install -r requirements.txt
 ```
 
-Core dependencies: numpy, pandas, scikit-learn, river, statsmodels,
-ruptures, scipy, matplotlib.
+**Core dependencies:** `numpy` · `pandas` · `scikit-learn` · `river` · `statsmodels` · `ruptures` · `scipy` · `matplotlib`
 
-## Reproducing the results
+---
 
-1. Download the UCI Household Electric Power dataset and place it as
-   indicated in the main notebook's data-loading cell.
-2. Open the main pipeline notebook and run all cells in order. Key parameters
-   (`ALPHA_W=0.05`, `ALPHA_D=0.10`, `L_LAGS=12`, `C_CONSEC=3`) are set in the
-   global parameters cell.
-3. The Mackey-Glass and lag-shift notebooks are self-contained: they generate
-   their own data and run the same pipeline.
+## ⚡ Quick Start
 
-## Method parameters
+1. 📥 Download the [UCI Household Power dataset](https://archive.ics.uci.edu/dataset/235/individual+household+electric+power+consumption)
+2. 🔬 Open the **Main Pipeline** notebook and *Run all*
+3. 🌀🔀 The Mackey-Glass and Lag-Shift notebooks are **self-contained** — they generate their own data
+
+---
+
+## 🎛️ Parameters
 
 | Parameter | Value | Role |
 |-----------|-------|------|
-| `ALPHA_W` | 0.05 | window-sizing significance level (Bartlett bound) |
-| `ALPHA_D` | 0.10 | drift-detection significance level (chi-square threshold) |
-| `L_LAGS`  | 12   | effective lag count for the drift statistic |
-| `C_CONSEC`| 3    | consecutive insignificant lags to set n* |
-| `K_MIN`   | 48   | minimum window (4 × L_LAGS) |
+| `ALPHA_W` | 0.05 | Window-sizing significance (Bartlett bound) |
+| `ALPHA_D` | 0.10 | Drift-detection significance (chi-square) |
+| `L_LAGS` | 12 | Effective lag count for drift statistic |
+| `C_CONSEC` | 3 | Consecutive insignificant lags to set n* |
+| `K_MIN` | 48 | Minimum window (4 × L_LAGS) |
 
-## Citation
+---
 
-If you use this work, please cite:
+## 📄 Citation
 
-> Palathingal, S. and Raj, E. D. ACF-MAAR: Autocorrelation-Guided
-> Multi-Window and AutoML-based Adaptable Regression for Streaming
-> Forecasting. [venue / year — update on acceptance]
+```bibtex
+@article{acfmaar,
+  title   = {ACF-MAAR: Autocorrelation-Guided Multi-Window and
+             AutoML-based Adaptable Regression for Streaming Forecasting},
+  author  = {Palathingal, Shahad and Raj, Ebin Deni},
+  journal = {TBD},
+  year    = {2026}
+}
+```
 
-## License
+---
 
-[Add your license — e.g. MIT]
+## 📜 License
+
+Released under the MIT License — see [`LICENSE`](LICENSE).
